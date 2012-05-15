@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<source name="mysql_grades" type="mysql" dsn="jdbc:mysql://localhost:3306/multibazes?user=root&password=rauda">
+		<tables>
+			<table name="students">
+				<field type="int" name="id" autoincrement="true" />
+				<field type="string" name="first_name" length="50" />
+				<field type="string" name="last_name" length="50" />
+			</table>
+			<table name="scores">
+				<field type="int" name="id" autoincrement="true" />
+				<field type="int" name="student_id" />
+				<field type="int" name="score" />
+				<field type="string" name="class_id" length="50" />
+			</table>
+		</tables>
+		<relationships>
+			<relationship type="one_to_many" originTable="students" originField="id" destTable="score" destField="student_id" />
+			<relationship type="many_to_one" originTable="score" originField="class_id" destSource="pgsql_classes" destTable="classes" destField="id" />
+		</relationships>
+	</source>
+	
+	<source name="pgsql_classes" type="postgresql" dsn="">
+		<tables>
+			<table name="classes">
+				<field type="string" name="id" length="50"/>
+				<field type="text" name="description" length="65000"/>
+			</table>
+		</tables>
+		
+		<relationships>
+			<relationship type="one_to_many" originTable="classes" originField="id" destSource="mysql_grades" destTable="scores" destField="class_id"/>
+		</relationships>
+	</source>
+	
+	<source name="payments" type="csv" separator=";" firstLineIgnore="true" filename="excel_data.csv">
+		<tables>
+			<table name="payments">
+				<field type="string" name="first_name" />
+				<field type="string" name="last_name" />
+				<field type="string" name="date" />
+				<field type="string" name="amount" />
+				<field type="string" name="description" />
+			</table>
+		</tables>
+		<relationships>
+			<compositionRelationship type="many_to_one" originTable="payments" destSource="mysql_grades" destTable="students">
+				<relationship originField="first_name" destField="last_name"/>
+				<relationship originField="last_name" destField="last_name"/>
+			</compositionRelationship>
+		</relationships>
+	</source>
+	
+</schema>
+

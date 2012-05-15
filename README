@@ -1,0 +1,4 @@
+This project is an assignment for master's course "Multiple database design" in Riga Technical University.
+It features a global XML schema which defines what are available data sources, and database browser which reads the schema and displays contents of databases.
+
+It's written in Java.
